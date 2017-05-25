@@ -4,26 +4,6 @@ import { TRound, TTeam, TGame, TScore, TGamesByTeams } from './types';
 import { sameGames, samePlayers, sameTeams } from './utils';
 import { buildScore, compareScore } from './score'
 
-const createRound = (teams: TTeam[], numberOfRounds: number, base_rounds: TRound[], currentTeamIdx: number): TRound[][] => {
-  const rounds: TRound[][] = [];
-
-  for (let teamIdx = currentTeamIdx + 1; teamIdx < teams.length; teamIdx++) {
-    const currentTeam = teams[teamIdx];
-    const teamGroup = [
-      ...base_rounds,
-      teams[teamIdx]
-    ];
-
-    if (teamGroup.length < numberOfRounds) {
-      rounds.push(...createRound(teams, numberOfRounds, [], teamIdx));
-    } else {
-      // rounds.push(teamGroup);
-    }
-  }
-
-  return rounds;
-};
-
 const teamCombinations = (teams: TTeam[], base_teams: TTeam[], currentIdx: number): TTeam[][] => {
   const combinations: TTeam[][] = []
   for (let teamIdx = 0; teamIdx < teams.length; teamIdx++) {
@@ -98,16 +78,12 @@ export const buildRounds = (games: TGamesByTeams[], base: { teams: TTeam[], roun
   const baseRounds = base.reduce((prev, cur) => [...prev, cur.round], []);
   for (let i = groupIndex; i < games.length; i++) {
     const potentialGames = games[i];
-    if (baseTeams.some((baseTeam) => potentialGames.teams.indexOf(baseTeam) >= 0)) {
-
-    } else {
-
+    if (!baseTeams.some((baseTeam) => potentialGames.teams.indexOf(baseTeam) >= 0)) {
       const bestOption = potentialGames.games.reduce<{ score: TScore; round: TRound }>((prev, cur) => {
         const currentRounds: TRound[] = [...baseRounds, { games: cur }];
         const currentScore = buildScore(currentRounds);
 
         if (!prev.score || compareScore(prev.score, currentScore) < 0) {
-          console.log('Better round')
           return {
             score: currentScore,
             round: { games: cur }
@@ -137,5 +113,3 @@ export const buildRounds = (games: TGamesByTeams[], base: { teams: TTeam[], roun
 const gameToString = (game: TGame) => {
   return `${game.homeTeam.players.join()}:${game.guestTeam.players.join()}`
 }
-
-let rountIdx = 1;
