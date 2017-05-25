@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "target": "es6",
+    "rootDir": "src",
+    "outDir": "build"
+  },
+  "files": [
+    "src/index.ts"
+  ]
+}
